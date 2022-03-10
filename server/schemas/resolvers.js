@@ -11,14 +11,14 @@ const resolvers = {
         },
     },
     Mutation: {
-        createUser: async (parent, { body }, context) => {
-            const userData = await User.create({ _id: context.user._id });
+        createUser: async (parent, { username, email, password }) => {
+            const userData = await User.create({ username:username, email:email, password:password });
             const token = signToken(userData);
 
             return { token, userData };
         },
-        login: async (parent, { body }, context) => {
-            const userData = await User.findOne({ $or: [{ username: body.username }, { email: body.email }] });
+        login: async (parent, { email, password }) => {
+            const userData = await User.findOne({ $or: [{ username: body.username }, { email: email }] });
 
             if (!userData) {
                 throw new AuthenticationError('No profile with this email found!');
